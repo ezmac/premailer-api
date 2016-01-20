@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sinatra/streaming'
 require 'premailer'
 require 'json'
-require 'pry'
 
 configure do
   set :environment, 'production'
