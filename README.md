@@ -9,3 +9,20 @@ Reordered docker container so I could build a little faster, and removed the rel
 
 Left some test code in because it's not that important.
 
+## API
+All requests will return a json object with an html property containing the style inlined code.
+
+
+Get with a url parameter of url will fetch that url and return inline it.
+` /api/0.1/documents?url=http://github.com`
+
+Post requires a json object with either an html property or url property.  If given html, it will inline that. If given a url it will fetch it and inline it.
+```json
+{
+  "html":"<html>...</html>"
+}
+//or 
+{
+  "url":"http://github.com"
+}
+```

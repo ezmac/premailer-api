@@ -7,6 +7,4 @@ gem 'thin', '= 1.6.3'
 gem 'json', '= 1.8.2'
 gem 'premailer', '= 1.8.6'
 gem 'hpricot', '= 0.8.6'
-gem 'pry', :group => :development
-gem 'pry-debugger', :group => :development
 
