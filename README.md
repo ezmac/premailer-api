@@ -1,6 +1,7 @@
 # premailer-api
 
-Added some files for running as a passenger app.  *important* you'll need to edit .htaccess to suit your environment.
+Added some files for running as a passenger app.  
+## _important_ you'll need to edit .htaccess to suit your environment.
 
 Forked from [bdavid/premailer-api](https://github.com/bdavid/premailer-api)
 
