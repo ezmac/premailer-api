@@ -2,24 +2,17 @@ require 'sinatra'
 require 'sinatra/streaming'
 require 'premailer'
 require 'json'
+require 'pry'
 
 configure do
   set :environment, 'production'
 end
-def handleRequest(params)
-  url = params['url']
-  html = params['html']
-  
-  if url.nil?
-    premailer = Premailer.new(html, :with_html_string => true)
-  else
-    premailer = Premailer.new(url)
-  end
-  
-  htmlContent = premailer.to_inline_css
-
+def respondWith(html)
   content_type :json
-  { :html => "#{htmlContent}"} .to_json
+  { :html => "#{html}"} .to_json
+end
+
+def handleRequest(params)
 end
 
 get '/test/' do
@@ -30,11 +23,37 @@ get '/sinatra/test/' do
 end
 
 post '/api/0.1/documents' do
-  handleRequest params
+  if request.env['CONTENT_TYPE'] == 'application/json'
+    requestBody = request.body.read
+    if not requestBody.empty?
+      body = JSON.parse requestBody
+      html = body['html']
+      url = body['url']
+    else
+      #LIAR!
+      return "if you're going to send a content_type of 'application/json' send a body"
+    end
+  else
+    html = params['html']
+    url = params['url']
+  end
+  if url.nil?
+    premailer = Premailer.new(html, :with_html_string => true)
+  else
+    premailer = Premailer.new(url)
+  end
+  htmlContent = premailer.to_inline_css
+  htmlContent = premailer.to_inline_css
+
+  respondWith htmlContent
 end
 
 get '/api/0.1/documents' do
-  handleRequest params
+  url = params['url']
+  premailer = Premailer.new(url)
+  htmlContent = premailer.to_inline_css
+
+  respondWith htmlContent
 end
 
 
