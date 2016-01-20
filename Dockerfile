@@ -8,4 +8,4 @@ WORKDIR /opt/premailer-api
 RUN bundle install
 EXPOSE 4567
 CMD ["ruby", "premailer-api.rb", "-o", "0.0.0.0"]
-ADD ./premailer-api.rb /opt/premailer-api/
+#ADD ./premailer-api.rb /opt/premailer-api/
