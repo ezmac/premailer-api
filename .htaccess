@@ -1,0 +1,3 @@
+PassengerAppRoot /www/MyRackApp
+RackEnv development
+Options -MultiViews
