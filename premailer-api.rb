@@ -2,17 +2,6 @@ require 'sinatra'
 require 'sinatra/streaming'
 require 'premailer'
 require 'json'
-require 'redis'
-
-REDIS_HTML_EXPIRY = 600
-
-REDIS_HOST = ENV['REDIS_HOST']
-REDIS_PORT = ENV['REDIS_PORT']
-REDIS_DB = ENV['REDIS_DB']
-if REDIS_HOST.nil? || REDIS_PORT.nil? || REDIS_DB.nil?
-  puts "Environment variables REDIS_HOST, REDIS_PORT and REDIS_DB are required."
-  exit
-end
 
 configure do
   set :environment, 'production'
@@ -31,26 +20,38 @@ post '/api/0.1/documents' do
   Dir.mkdir('html') unless File.exists?('html')
   
   # Write the HTML output to Redis
-  htmlFilename = "#{SecureRandom.uuid}.html"
   htmlContent = premailer.to_inline_css
-  redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :db => REDIS_DB)
-  redis.setex(htmlFilename, REDIS_HTML_EXPIRY, htmlContent)
 
-  htmlPath = "html/#{htmlFilename}"
   content_type :json
-  { :documents => { :html => "#{url(htmlPath)}" } }.to_json
+  { :html => "#{htmlContent}"} .to_json
+end
+get '/test/' do
+  "this is your rack app"
+end
+get '/sinatra/test/' do
+  "this is your rack app with prefix"
 end
 
-get '/html/:filename' do |filename|
-  redis = Redis.new(:host => REDIS_HOST, :port => REDIS_PORT, :db => REDIS_DB)
-  content = redis.get(filename)
 
-  if content.nil?
-    status 404
+get '/api/0.1/documents' do
+  url = params['url']
+  html = params['html']
+  
+  if url.nil?
+    premailer = Premailer.new(html, :with_html_string => true)
   else
-    content
+    premailer = Premailer.new(url)
   end
+  
+  Dir.mkdir('html') unless File.exists?('html')
+  
+  # Write the HTML output to Redis
+  htmlContent = premailer.to_inline_css
+
+  content_type :json
+  { :html => "#{htmlContent}"} .to_json
 end
+
 
 error do
   logger.error env['sinatra.error'].message
