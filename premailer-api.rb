@@ -22,7 +22,7 @@ get '/sinatra/test/' do
   "this is your rack app with prefix"
 end
 
-post '/api/0.1/documents' do
+post '/api/premailer/0.1/documents' do
   if request.env['CONTENT_TYPE'] == 'application/json'
     requestBody = request.body.read
     if not requestBody.empty?
@@ -48,7 +48,7 @@ post '/api/0.1/documents' do
   respondWith htmlContent
 end
 
-get '/api/0.1/documents' do
+get '/api/premailer/0.1/documents' do
   url = params['url']
   premailer = Premailer.new(url)
   htmlContent = premailer.to_inline_css
