@@ -1,10 +1,12 @@
 require 'sinatra'
 require 'sinatra/streaming'
+require 'sinatra/cross_origin'
 require 'premailer'
 require 'json'
 
 configure do
   set :environment, 'production'
+  enable :cross_origin
 end
 def respondWith(html)
   content_type :json
@@ -21,7 +23,17 @@ get '/sinatra/test/' do
   "this is your rack app with prefix"
 end
 
+options "*" do
+  response.headers["Allow"] = "GET,POST,OPTIONS"
+
+  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+
+  200
+end
+
+
 post '/api/premailer/0.1/documents' do
+  cross_origin
   if request.env['CONTENT_TYPE'] == 'application/json'
     requestBody = request.body.read
     if not requestBody.empty?
