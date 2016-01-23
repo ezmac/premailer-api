@@ -67,7 +67,7 @@ options "*" do
 end
 
 
-post '/api/premailer/0.1/documents' do
+post '/api/0.1/documents' do
   premailer_opts={}
   if request.env['CONTENT_TYPE'] == 'application/json'
     requestBody = request.body.read
