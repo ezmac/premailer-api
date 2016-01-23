@@ -1,0 +1,18 @@
+api:
+  build: ./
+  volumes:
+    - ./:/opt/premailer-api/:rw
+  ports:
+    - 4567:4567
+  links:
+    - redis:redis
+  environment:
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    - REDIS_DB=premailer
+redis:
+  image: redis
+  expose:
+    - 6379
+  ports:
+    - 6379:6379
